@@ -1,0 +1,217 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Customer Portal</title><style>
+:root{--bg:#08111f;--panel:#101b2e;--panel2:#16243a;--line:#263a5a;--text:#eef5ff;--muted:#9eb0c9;--accent:#4fd1c5;--accent2:#6aa8ff;--ok:#58d68d;--warn:#ffc857;--danger:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07101c,#0b1525);color:var(--text)}
+.app{max-width:820px;margin:auto;min-height:100vh;padding:14px}
+header{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#06101c;font-weight:900;flex:0 0 auto}
+h1,h2,h3,p{margin-top:0}.sub{color:var(--muted);font-size:13px;line-height:1.45}
+.card{background:rgba(16,27,46,.97);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:0 15px 42px rgba(0,0,0,.24)}
+.btn{width:100%;border:0;border-radius:12px;padding:13px 14px;background:#243856;color:var(--text);font-weight:800;margin-top:9px;text-decoration:none;display:block;text-align:center}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#2eb7aa);color:#06110f}
+.btn.secondary{background:linear-gradient(135deg,var(--accent2),#4c7de0)}
+.btn.ok{background:var(--ok);color:#07160e}.btn.warn{background:var(--warn);color:#211500}.btn.danger{background:var(--danger);color:#230809}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:center}
+.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#223552;font-size:12px;font-weight:800}
+input,select,textarea{width:100%;background:#0c1728;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit}
+label{display:block;color:var(--muted);font-size:13px;margin:11px 0 6px}
+textarea{min-height:90px}
+.back{display:inline-block;color:var(--accent);text-decoration:none;font-weight:800;margin-bottom:12px}
+.toast{position:fixed;left:14px;right:14px;bottom:14px;background:#0d192a;border:1px solid var(--accent);border-radius:12px;padding:13px;display:none;text-align:center}
+.demo-link{display:block;text-decoration:none;color:var(--text);background:#132137;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:11px}
+.demo-link strong{display:block;font-size:18px;margin-bottom:4px}.demo-link span{color:var(--muted);font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{background:#132137;border:1px solid var(--line);border-radius:14px;padding:14px}
+.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:24px;font-weight:900;margin-top:4px}
+.item{background:#111d31;border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:10px}
+.item strong{display:block;margin-bottom:4px}
+.nav{display:flex;overflow:auto;gap:8px;margin-bottom:13px}
+.nav button{white-space:nowrap;border:0;border-radius:999px;padding:10px 13px;background:#1a2a43;color:var(--text);font-weight:800}
+.nav button.active{background:var(--accent);color:#06110f}
+.section{display:none}.section.active{display:block}
+.timeline{border-left:3px solid var(--accent2);padding-left:12px}
+.event{background:#101a2c;border-radius:11px;padding:10px 12px;margin-bottom:9px}
+.event small{color:var(--muted)}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+</style></head><body><div class="app"><a class="back" href="index.html">← All CRM demos</a><header><div class="logo">CP</div><div><h1 style="margin-bottom:3px">Customer Portal</h1><div class="sub">SecureBid customer-facing account portal</div></div></header>
+<div class="card">
+  <div class="row">
+    <div>
+      <h2 style="margin-bottom:4px">Northstar Foods, Inc.</h2>
+      <div class="sub">Account #CUST-1042 · Primary contact: Jordan Lee</div>
+    </div>
+    <span class="pill" style="background:#24543a">Active</span>
+  </div>
+  <div class="grid2" style="margin-top:12px">
+    <div class="metric"><div class="label">Open Quotes</div><div id="mQuotes" class="value">0</div></div>
+    <div class="metric"><div class="label">Outstanding Balance</div><div id="mBalance" class="value">$0.00</div></div>
+    <div class="metric"><div class="label">Active Work Orders</div><div id="mWO" class="value">0</div></div>
+    <div class="metric"><div class="label">Documents</div><div id="mDocs" class="value">0</div></div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="active" onclick="showSection('overview',this)">Overview</button>
+  <button onclick="showSection('quotes',this)">Quotes</button>
+  <button onclick="showSection('billing',this)">Billing</button>
+  <button onclick="showSection('workorders',this)">Work Orders</button>
+  <button onclick="showSection('documents',this)">Documents</button>
+  <button onclick="showSection('support',this)">Support</button>
+  <button onclick="showSection('profile',this)">Profile</button>
+</div>
+
+<section id="overview" class="section active">
+  <div class="card">
+    <h2>Account Overview</h2>
+    <div class="timeline" id="overviewTimeline"></div>
+  </div>
+</section>
+
+<section id="quotes" class="section">
+  <div class="card">
+    <h2>Quotes & Proposals</h2>
+    <div id="portalQuotes"></div>
+  </div>
+</section>
+
+<section id="billing" class="section">
+  <div class="card">
+    <h2>Invoices & Payments</h2>
+    <div id="portalBilling"></div>
+    <button class="btn primary" onclick="makePayment()">Make Demo Payment</button>
+  </div>
+</section>
+
+<section id="workorders" class="section">
+  <div class="card">
+    <h2>Work Order Visibility</h2>
+    <p class="sub">Customers can see approved status updates without accessing internal technician notes, costs, or margins.</p>
+    <div id="portalWorkorders"></div>
+  </div>
+</section>
+
+<section id="documents" class="section">
+  <div class="card">
+    <h2>Documents</h2>
+    <div id="portalDocuments"></div>
+  </div>
+</section>
+
+<section id="support" class="section">
+  <div class="card">
+    <h2>Request Support</h2>
+    <label>Request Type</label>
+    <select id="supportType"><option>Service Request</option><option>Billing Question</option><option>Quote Question</option><option>Document Request</option></select>
+    <label>Subject</label><input id="supportSubject" value="Request service visit">
+    <label>Details</label><textarea id="supportDetails">Please contact us to schedule a service visit.</textarea>
+    <button class="btn secondary" onclick="submitSupport()">Submit Request</button>
+    <div id="supportList" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<section id="profile" class="section">
+  <div class="card">
+    <h2>Account Profile</h2>
+    <label>Company Name</label><input id="profileCompany" value="Northstar Foods, Inc.">
+    <label>Primary Contact</label><input id="profileContact" value="Jordan Lee">
+    <label>Email</label><input id="profileEmail" value="jordan.lee@example.com">
+    <label>Phone</label><input id="profilePhone" value="(555) 014-2290">
+    <label>Billing Address</label><textarea id="profileAddress">100 Industrial Way, Tampa, FL 33602</textarea>
+    <button class="btn primary" onclick="saveProfile()">Save Profile</button>
+  </div>
+</section>
+</div><div id="toast" class="toast"></div><script>
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2400)}
+function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(n||0))}
+function getPortal(){return JSON.parse(localStorage.getItem('securebid_customer_portal')||'null')}
+function setPortal(data){localStorage.setItem('securebid_customer_portal',JSON.stringify(data))}
+
+let state=getPortal();
+if(!state){
+  state={
+    account:{company:'Northstar Foods, Inc.',contact:'Jordan Lee',email:'jordan.lee@example.com',phone:'(555) 014-2290',address:'100 Industrial Way, Tampa, FL 33602'},
+    quotes:[
+      {id:'SB-2026-1042',title:'Facility Security Upgrade',amount:18450,status:'Sent'},
+      {id:'SB-2026-1031',title:'Camera Expansion',amount:9200,status:'Accepted'}
+    ],
+    invoices:[
+      {id:'INV-2026-301',amount:4600,status:'Due',due:'6/20/2026'},
+      {id:'INV-2026-288',amount:9200,status:'Paid',due:'5/15/2026'}
+    ],
+    workorders:[
+      {id:'WO-1001',title:'Camera Expansion',status:'Scheduled',date:'6/12/2026'},
+      {id:'WO-0988',title:'Annual Fire Alarm Inspection',status:'Completed',date:'5/21/2026'}
+    ],
+    documents:[
+      {name:'Accepted Proposal SB-2026-1031.pdf',type:'Proposal'},
+      {name:'Invoice INV-2026-301.pdf',type:'Invoice'},
+      {name:'Completion Report WO-0988.pdf',type:'Work Order'}
+    ],
+    support:[]
+  };
+  setPortal(state);
+}
+
+function showSection(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function acceptQuote(id){
+  const q=state.quotes.find(x=>x.id===id); if(!q)return;
+  q.status='Accepted'; setPortal(state); render(); toast('Quote accepted.');
+}
+
+function declineQuote(id){
+  const q=state.quotes.find(x=>x.id===id); if(!q)return;
+  q.status='Declined'; setPortal(state); render(); toast('Quote declined.');
+}
+
+function makePayment(){
+  const inv=state.invoices.find(i=>i.status==='Due');
+  if(!inv)return toast('No outstanding invoice.');
+  inv.status='Paid'; setPortal(state); render(); toast('Demo payment recorded.');
+}
+
+function submitSupport(){
+  const req={id:'REQ-'+(1000+state.support.length+1),type:supportType.value,subject:supportSubject.value.trim(),details:supportDetails.value.trim(),status:'Open',date:new Date().toLocaleString()};
+  state.support.unshift(req); setPortal(state); render(); toast('Support request submitted.');
+}
+
+function saveProfile(){
+  state.account={company:profileCompany.value.trim(),contact:profileContact.value.trim(),email:profileEmail.value.trim(),phone:profilePhone.value.trim(),address:profileAddress.value.trim()};
+  setPortal(state); render(); toast('Account profile saved.');
+}
+
+function render(){
+  const openQuotes=state.quotes.filter(q=>['Sent','Viewed'].includes(q.status)).length;
+  const balance=state.invoices.filter(i=>i.status==='Due').reduce((s,i)=>s+i.amount,0);
+  const activeWO=state.workorders.filter(w=>w.status!=='Completed').length;
+  mQuotes.textContent=openQuotes; mBalance.textContent=money(balance); mWO.textContent=activeWO; mDocs.textContent=state.documents.length;
+
+  overviewTimeline.innerHTML=[
+    '<div class="event"><strong>Quote SB-2026-1042 sent</strong><div>Facility Security Upgrade is ready for review.</div><small>Recent</small></div>',
+    '<div class="event"><strong>Invoice INV-2026-301 due</strong><div>'+money(4600)+' outstanding.</div><small>Due 6/20/2026</small></div>',
+    '<div class="event"><strong>Work order WO-1001 scheduled</strong><div>Camera Expansion scheduled for 6/12/2026.</div><small>Upcoming</small></div>'
+  ].join('');
+
+  portalQuotes.innerHTML=state.quotes.map(q=>'<div class="item"><div class="row"><div><strong>'+q.id+' — '+q.title+'</strong><div class="sub">'+money(q.amount)+'</div></div><span class="pill">'+q.status+'</span></div>'+(q.status==='Sent'||q.status==='Viewed'?'<div class="grid2"><button class="btn ok" onclick="acceptQuote(\''+q.id+'\')">Accept</button><button class="btn danger" onclick="declineQuote(\''+q.id+'\')">Decline</button></div>':'')+'</div>').join('');
+
+  portalBilling.innerHTML=state.invoices.map(i=>'<div class="item"><div class="row"><div><strong>'+i.id+'</strong><div class="sub">Due '+i.due+'</div></div><div><div>'+money(i.amount)+'</div><span class="pill">'+i.status+'</span></div></div></div>').join('');
+
+  portalWorkorders.innerHTML=state.workorders.map(w=>'<div class="item"><div class="row"><div><strong>'+w.id+' — '+w.title+'</strong><div class="sub">Scheduled '+w.date+'</div></div><span class="pill">'+w.status+'</span></div></div>').join('');
+
+  portalDocuments.innerHTML=state.documents.map(d=>'<div class="item"><div class="row"><div><strong>'+d.name+'</strong><div class="sub">'+d.type+'</div></div><button class="btn secondary" style="width:auto;padding:8px 11px;margin:0" onclick="toast(\'Document opened in demo.\')">Open</button></div></div>').join('');
+
+  supportList.innerHTML=state.support.length?state.support.map(r=>'<div class="item"><div class="row"><div><strong>'+r.id+' — '+r.subject+'</strong><div class="sub">'+r.type+' · '+r.date+'</div></div><span class="pill">'+r.status+'</span></div><div>'+r.details+'</div></div>').join(''):'<div class="sub">No support requests yet.</div>';
+
+  profileCompany.value=state.account.company;
+  profileContact.value=state.account.contact;
+  profileEmail.value=state.account.email;
+  profilePhone.value=state.account.phone;
+  profileAddress.value=state.account.address;
+}
+render();
+</script></body></html>

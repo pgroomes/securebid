@@ -1,0 +1,30 @@
+SECUREBID GITHUB PAGES DEPLOYMENT
+
+Upload every file and folder inside this package to the root of your GitHub repository.
+
+Required repository layout:
+
+index.html
+customerportal.html
+workorders.html
+technicians.html
+quotes.html
+pricing.html
+branding.html
+coverpage.html
+readreceipts.html
+...other HTML files...
+.nojekyll
+README.md
+
+GitHub Pages settings:
+
+Source: Deploy from a branch
+Branch: main
+Folder: /(root)
+
+Your test address will normally follow this pattern:
+
+https://YOUR-GITHUB-USERNAME.github.io/YOUR-REPOSITORY-NAME/
+
+This is a browser-local demo. Each phone/browser has its own saved demo data.

@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Cover Page Builder</title><style>
+:root{--bg:#08111f;--panel:#101b2e;--panel2:#16243a;--line:#263a5a;--text:#eef5ff;--muted:#9eb0c9;--accent:#4fd1c5;--accent2:#6aa8ff;--ok:#58d68d;--warn:#ffc857;--danger:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07101c,#0b1525);color:var(--text)}
+.app{max-width:720px;margin:auto;min-height:100vh;padding:14px}
+header{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#06101c;font-weight:900;flex:0 0 auto}
+h1,h2,h3,p{margin-top:0}.sub{color:var(--muted);font-size:13px;line-height:1.45}
+.card{background:rgba(16,27,46,.97);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:0 15px 42px rgba(0,0,0,.24)}
+.btn{width:100%;border:0;border-radius:12px;padding:13px 14px;background:#243856;color:var(--text);font-weight:800;margin-top:9px}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#2eb7aa);color:#06110f}
+.btn.secondary{background:linear-gradient(135deg,var(--accent2),#4c7de0)}
+.btn.ok{background:var(--ok);color:#07160e}.btn.warn{background:var(--warn);color:#211500}.btn.danger{background:var(--danger);color:#230809}
+.metric{padding:14px;border-radius:14px;background:#132137;border:1px solid var(--line);margin-bottom:10px}
+.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:27px;font-weight:900;margin-top:3px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:center}
+.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#223552;font-size:12px;font-weight:800}
+input,select,textarea{width:100%;background:#0c1728;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit}
+label{display:block;color:var(--muted);font-size:13px;margin:11px 0 6px}
+textarea{min-height:90px}
+.event{border-left:3px solid var(--accent2);padding:10px 12px;background:#101a2c;border-radius:0 11px 11px 0;margin-bottom:9px}
+.event small{color:var(--muted)}
+.deal{background:#17263d;border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+.quote{background:#fff;color:#172033;border-radius:14px;padding:18px}
+.quote table{width:100%;border-collapse:collapse}.quote th,.quote td{padding:10px 6px;border-bottom:1px solid #d8e0ea;text-align:left}.quote td:last-child,.quote th:last-child{text-align:right}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.file{background:#111d31;border:1px solid var(--line);border-radius:11px;overflow:hidden}.file img{width:100%;height:115px;object-fit:cover}.file div{padding:8px;font-size:12px;overflow-wrap:anywhere}
+.back{display:inline-block;color:var(--accent);text-decoration:none;font-weight:800;margin-bottom:12px}
+.toast{position:fixed;left:14px;right:14px;bottom:14px;background:#0d192a;border:1px solid var(--accent);border-radius:12px;padding:13px;display:none;text-align:center}
+.preview-logo-wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid #d8e0ea;padding-bottom:12px;margin-bottom:12px}
+.preview-logo{max-width:150px;max-height:70px;object-fit:contain}
+.brand-box{background:#fff;border-radius:12px;padding:12px;text-align:center}
+.brand-box img{max-width:220px;max-height:100px;object-fit:contain}
+.cover-box{background:#fff;border-radius:12px;padding:12px;text-align:center}
+.cover-box img{max-width:100%;max-height:220px;object-fit:contain}
+.demo-link{display:block;text-decoration:none;color:var(--text);background:#132137;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:11px}
+.demo-link strong{display:block;font-size:18px;margin-bottom:4px}.demo-link span{color:var(--muted);font-size:13px}
+.cover-page{background:#fff;color:#172033;border-radius:14px;padding:0;overflow:hidden;margin-bottom:18px;border:1px solid #d8e0ea;page-break-after:always}
+.cover-hero{padding:28px 24px 12px 24px;text-align:center}
+.cover-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:20px 24px}
+.cover-logo{max-width:140px;max-height:70px;object-fit:contain}
+.cover-title{font-size:32px;font-weight:900;margin:16px 0 8px 0}
+.cover-subtitle{font-size:18px;color:#41556f;margin-bottom:16px}
+.cover-graphic{width:100%;max-height:360px;object-fit:cover;display:block;border-top:1px solid #e3e8ee;border-bottom:1px solid #e3e8ee}
+.cover-footer{padding:18px 24px 26px 24px;color:#42556d;text-align:center}
+@media(min-width:600px){.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{margin:0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions .btn{margin-top:9px}}
+@media print{body{background:white}.back,.btn,.toast,.no-print{display:none!important}.quote{padding:0}.card{border:0;box-shadow:none;background:white;color:#172033}.cover-page{border:0}}
+</style></head><body><div class="app"><a class="back" href="index.html">← All CRM demos</a><header><div class="logo">SB</div><div><h1 style="margin-bottom:3px">Cover Page Builder</h1><div class="sub">SecureBid mobile CRM demonstration</div></div></header>
+<div class="card">
+  <h2>Quote Cover Page Settings</h2>
+  <p class="sub">Upload a graphic and set the text used on the front page of every quote.</p>
+  <label>Cover Page Title</label>
+  <input id="coverTitle" placeholder="Security Solution Proposal">
+  <label>Cover Page Subtitle</label>
+  <input id="coverSubtitle" placeholder="Prepared for your review">
+  <label>Footer Text</label>
+  <input id="coverFooter" placeholder="Prepared by Your Company">
+  <label>Upload Cover Graphic</label>
+  <input id="coverGraphicInput" type="file" accept="image/*">
+  <div id="coverPreview" class="cover-box" style="margin-top:12px">No cover graphic uploaded yet.</div>
+  <button class="btn primary" onclick="saveCover()">Save Cover Page</button>
+  <button class="btn secondary" onclick="clearCover()">Remove Cover Graphic</button>
+</div>
+<div class="card">
+  <h2>Preview Notes</h2>
+  <div class="event"><strong>Front Page</strong><div>The uploaded graphic appears on page one before the quote details.</div><small>Applied automatically inside the Quotes demo.</small></div>
+  <div class="event"><strong>Branding Support</strong><div>Your saved logo from Branding / Backend Settings also appears on the cover page when available.</div><small>Stored locally for the demo.</small></div>
+</div>
+</div><div id="toast" class="toast"></div><script>
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2400)}
+function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n)}
+function getBranding(){return JSON.parse(localStorage.getItem('securebid_branding')||'{"companyName":"PCG Securities & Fire","email":"sales@pcgsf.com","phone":"(813) 555-0100","logo":""}')}
+function setBranding(data){localStorage.setItem('securebid_branding',JSON.stringify(data))}
+function getCoverSettings(){return JSON.parse(localStorage.getItem('securebid_cover')||'{"title":"Security Solution Proposal","subtitle":"Prepared for your review","graphic":"","footer":"Prepared by PCG Securities & Fire"}')}
+function setCoverSettings(data){localStorage.setItem('securebid_cover',JSON.stringify(data))}
+
+let currentGraphic='';
+function renderCover(){
+  const c=getCoverSettings();
+  coverTitle.value=c.title||'';
+  coverSubtitle.value=c.subtitle||'';
+  coverFooter.value=c.footer||'';
+  currentGraphic=c.graphic||'';
+  coverPreview.innerHTML=currentGraphic?'<img src="'+currentGraphic+'" alt="Cover Graphic"><div style="margin-top:8px;color:#172033;font-weight:800">'+(c.title||'Cover Graphic')+'</div>':'No cover graphic uploaded yet.';
+}
+coverGraphicInput.addEventListener('change',e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{currentGraphic=reader.result;coverPreview.innerHTML='<img src="'+currentGraphic+'" alt="Cover Graphic"><div style="margin-top:8px;color:#172033;font-weight:800">Graphic ready to save</div>';toast('Cover graphic loaded. Tap Save Cover Page to apply it.');};
+  reader.readAsDataURL(file);
+});
+function saveCover(){
+  const data={title:coverTitle.value.trim()||'Security Solution Proposal',subtitle:coverSubtitle.value.trim()||'Prepared for your review',footer:coverFooter.value.trim()||'Prepared by PCG Securities & Fire',graphic:currentGraphic||''};
+  setCoverSettings(data);
+  renderCover();
+  toast('Cover page settings saved. Open Quotes to see it.');
+}
+function clearCover(){
+  currentGraphic='';
+  setCoverSettings({title:coverTitle.value.trim()||'Security Solution Proposal',subtitle:coverSubtitle.value.trim()||'Prepared for your review',footer:coverFooter.value.trim()||'Prepared by PCG Securities & Fire',graphic:''});
+  renderCover();
+  toast('Cover graphic removed.');
+}
+renderCover();
+</script></body></html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Work Order System</title><style>
+:root{--bg:#08111f;--panel:#101b2e;--panel2:#16243a;--line:#263a5a;--text:#eef5ff;--muted:#9eb0c9;--accent:#4fd1c5;--accent2:#6aa8ff;--ok:#58d68d;--warn:#ffc857;--danger:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07101c,#0b1525);color:var(--text)}
+.app{max-width:800px;margin:auto;min-height:100vh;padding:14px}
+header{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#06101c;font-weight:900;flex:0 0 auto}
+h1,h2,h3,p{margin-top:0}.sub{color:var(--muted);font-size:13px;line-height:1.45}
+.card{background:rgba(16,27,46,.97);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:0 15px 42px rgba(0,0,0,.24)}
+.btn{width:100%;border:0;border-radius:12px;padding:13px 14px;background:#243856;color:var(--text);font-weight:800;margin-top:9px;text-decoration:none;display:block;text-align:center}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#2eb7aa);color:#06110f}
+.btn.secondary{background:linear-gradient(135deg,var(--accent2),#4c7de0)}
+.btn.ok{background:var(--ok);color:#07160e}.btn.warn{background:var(--warn);color:#211500}.btn.danger{background:var(--danger);color:#230809}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:center}
+.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#223552;font-size:12px;font-weight:800}
+input,select,textarea{width:100%;background:#0c1728;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit}
+label{display:block;color:var(--muted);font-size:13px;margin:11px 0 6px}
+textarea{min-height:90px}
+.back{display:inline-block;color:var(--accent);text-decoration:none;font-weight:800;margin-bottom:12px}
+.toast{position:fixed;left:14px;right:14px;bottom:14px;background:#0d192a;border:1px solid var(--accent);border-radius:12px;padding:13px;display:none;text-align:center}
+.demo-link{display:block;text-decoration:none;color:var(--text);background:#132137;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:11px}
+.demo-link strong{display:block;font-size:18px;margin-bottom:4px}.demo-link span{color:var(--muted);font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{background:#132137;border:1px solid var(--line);border-radius:14px;padding:14px}
+.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:24px;font-weight:900;margin-top:4px}
+.item{background:#111d31;border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:10px}
+.item strong{display:block;margin-bottom:4px}
+.timeline{border-left:3px solid var(--accent2);padding-left:12px}
+.event{background:#101a2c;border-radius:11px;padding:10px 12px;margin-bottom:9px}
+.event small{color:var(--muted)}
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}
+.file{background:#111d31;border:1px solid var(--line);border-radius:11px;overflow:hidden}.file img{width:100%;height:120px;object-fit:cover}.file div{padding:8px;font-size:12px}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+</style></head><body><div class="app"><a class="back" href="index.html">← All CRM demos</a><header><div class="logo">WO</div><div><h1 style="margin-bottom:3px">Work Order System</h1><div class="sub">Internal operations module — separate from customer CRM</div></div></header>
+<div class="card">
+  <h2>Internal Work Order Dashboard</h2>
+  <div class="grid2">
+    <div class="metric"><div class="label">Open Work Orders</div><div id="mOpen" class="value">0</div></div>
+    <div class="metric"><div class="label">In Progress</div><div id="mProgress" class="value">0</div></div>
+    <div class="metric"><div class="label">Completed</div><div id="mComplete" class="value">0</div></div>
+    <div class="metric"><div class="label">Scheduled Today</div><div id="mToday" class="value">0</div></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Create Work Order</h2>
+  <label>Work Order Title</label><input id="woTitle" value="Install access control system">
+  <label>Internal Job Number</label><input id="woJob" value="JOB-2026-1042">
+  <div class="grid2">
+    <div><label>Site / Location</label><input id="woSite" value="Northstar Foods - Main Facility"></div>
+    <div><label>Assigned Technician</label><select id="woTech"></select></div>
+  </div>
+  <div class="grid2">
+    <div><label>Scheduled Date</label><input id="woDate" type="date"></div>
+    <div><label>Priority</label><select id="woPriority"><option>Normal</option><option>High</option><option>Emergency</option></select></div>
+  </div>
+  <label>Scope of Work</label><textarea id="woScope">Install controllers, readers, cabling, and complete commissioning.</textarea>
+  <button class="btn primary" onclick="createWO()">Create Work Order</button>
+</div>
+
+<div class="card">
+  <h2>Work Orders</h2>
+  <div id="woList"></div>
+</div>
+
+<div class="card">
+  <h2>Field Update Demo</h2>
+  <label>Select Work Order</label><select id="fieldWO"></select>
+  <div class="grid2">
+    <div><label>Status</label><select id="fieldStatus"><option>Scheduled</option><option>Dispatched</option><option>In Progress</option><option>Waiting on Parts</option><option>Completed</option></select></div>
+    <div><label>Labor Hours</label><input id="fieldHours" type="number" step="0.25" value="4"></div>
+  </div>
+  <label>Parts Used</label><input id="fieldParts" value="2 readers, 1 controller, 200 ft cable">
+  <label>Technician Notes</label><textarea id="fieldNotes">Installed first controller and completed cable pulls.</textarea>
+  <label>Upload Field Photos</label><input id="fieldPhotos" type="file" accept="image/*" multiple>
+  <div id="photoGallery" class="gallery"></div>
+  <label>Completion Sign-Off Name</label><input id="signoffName" placeholder="Site contact or supervisor">
+  <button class="btn secondary" onclick="saveFieldUpdate()">Save Field Update</button>
+</div>
+
+<div class="card">
+  <h2>Technicians</h2>
+  <div id="techList"></div>
+  <label>Add Technician</label><input id="newTechName" placeholder="Technician name">
+  <label>Role / Trade</label><input id="newTechTrade" placeholder="Installer, Programmer, Supervisor">
+  <button class="btn ok" onclick="addTech()">Add Technician</button>
+</div>
+</div><div id="toast" class="toast"></div><script>
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2400)}
+function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(n||0))}
+function getWO(){return JSON.parse(localStorage.getItem('securebid_workorders')||'{"orders":[],"techs":[{"id":1,"name":"Alex Ramirez","trade":"Lead Technician"},{"id":2,"name":"Chris Morgan","trade":"Installer"}]}')}
+function setWO(data){localStorage.setItem('securebid_workorders',JSON.stringify(data))}
+
+let state=getWO();
+let tempPhotos=[];
+if(!state.orders.length){
+  state.orders.push({
+    id:'WO-1001',title:'Camera expansion',job:'JOB-2026-1001',site:'Riverbend Logistics',
+    tech:'Alex Ramirez',date:new Date().toISOString().slice(0,10),priority:'High',
+    scope:'Install four additional cameras and update recorder configuration.',
+    status:'Scheduled',hours:0,parts:'',notes:'',photos:[],signoff:'',history:[]
+  });
+  setWO(state);
+}
+fieldPhotos.addEventListener('change',e=>{
+  tempPhotos=[];
+  for(const f of e.target.files){
+    const r=new FileReader();
+    r.onload=()=>{tempPhotos.push({name:f.name,data:r.result});renderPhotos()};
+    r.readAsDataURL(f);
+  }
+});
+function renderPhotos(){
+  photoGallery.innerHTML=tempPhotos.map(f=>'<div class="file"><img src="'+f.data+'"><div>'+f.name+'</div></div>').join('');
+}
+function createWO(){
+  const id='WO-'+String(1000+state.orders.length+1);
+  const order={
+    id,title:woTitle.value.trim(),job:woJob.value.trim(),site:woSite.value.trim(),
+    tech:woTech.value,date:woDate.value||new Date().toISOString().slice(0,10),
+    priority:woPriority.value,scope:woScope.value.trim(),status:'Scheduled',
+    hours:0,parts:'',notes:'',photos:[],signoff:'',history:[{date:new Date().toLocaleString(),text:'Work order created'}]
+  };
+  state.orders.unshift(order);setWO(state);render();toast('Work order created.');
+}
+function saveFieldUpdate(){
+  const order=state.orders.find(o=>o.id===fieldWO.value);
+  if(!order)return toast('Create a work order first.');
+  order.status=fieldStatus.value;
+  order.hours=Number(fieldHours.value||0);
+  order.parts=fieldParts.value.trim();
+  order.notes=fieldNotes.value.trim();
+  order.photos=tempPhotos.slice();
+  order.signoff=signoffName.value.trim();
+  order.history.unshift({date:new Date().toLocaleString(),text:'Status changed to '+order.status});
+  setWO(state);render();toast('Field update saved.');
+}
+function addTech(){
+  const name=newTechName.value.trim();if(!name)return toast('Enter technician name.');
+  state.techs.push({id:Date.now(),name,trade:newTechTrade.value.trim()||'Technician'});
+  setWO(state);render();toast('Technician added.');
+}
+function render(){
+  woTech.innerHTML=state.techs.map(t=>'<option>'+t.name+'</option>').join('');
+  techList.innerHTML=state.techs.map(t=>'<div class="row"><div><strong>'+t.name+'</strong><div class="sub">'+t.trade+'</div></div><span class="pill">Active</span></div>').join('');
+  fieldWO.innerHTML=state.orders.map(o=>'<option value="'+o.id+'">'+o.id+' — '+o.title+'</option>').join('');
+  woList.innerHTML=state.orders.map(o=>'<div class="item"><div class="row"><div><strong>'+o.id+' — '+o.title+'</strong><div class="sub">'+o.site+' · '+o.tech+'</div></div><span class="pill">'+o.status+'</span></div><div class="grid2" style="margin-top:10px"><div><span class="sub">Scheduled</span><div>'+o.date+'</div></div><div><span class="sub">Priority</span><div>'+o.priority+'</div></div><div><span class="sub">Labor Hours</span><div>'+o.hours+'</div></div><div><span class="sub">Parts Used</span><div>'+(o.parts||'Not entered')+'</div></div></div><div style="margin-top:10px"><span class="sub">Scope</span><div>'+o.scope+'</div></div>'+(o.notes?'<div style="margin-top:10px"><span class="sub">Field Notes</span><div>'+o.notes+'</div></div>':'')+(o.signoff?'<div style="margin-top:10px"><span class="sub">Completion Sign-Off</span><div>'+o.signoff+'</div></div>':'')+'</div>').join('');
+  mOpen.textContent=state.orders.filter(o=>!['Completed'].includes(o.status)).length;
+  mProgress.textContent=state.orders.filter(o=>o.status==='In Progress').length;
+  mComplete.textContent=state.orders.filter(o=>o.status==='Completed').length;
+  const today=new Date().toISOString().slice(0,10);
+  mToday.textContent=state.orders.filter(o=>o.date===today).length;
+}
+woDate.value=new Date().toISOString().slice(0,10);
+render();
+</script></body></html>

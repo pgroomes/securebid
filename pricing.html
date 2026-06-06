@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Pricing & Margins</title><style>
+:root{--bg:#08111f;--panel:#101b2e;--panel2:#16243a;--line:#263a5a;--text:#eef5ff;--muted:#9eb0c9;--accent:#4fd1c5;--accent2:#6aa8ff;--ok:#58d68d;--warn:#ffc857;--danger:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07101c,#0b1525);color:var(--text)}
+.app{max-width:760px;margin:auto;min-height:100vh;padding:14px}
+header{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#06101c;font-weight:900;flex:0 0 auto}
+h1,h2,h3,p{margin-top:0}.sub{color:var(--muted);font-size:13px;line-height:1.45}
+.card{background:rgba(16,27,46,.97);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:0 15px 42px rgba(0,0,0,.24)}
+.btn{width:100%;border:0;border-radius:12px;padding:13px 14px;background:#243856;color:var(--text);font-weight:800;margin-top:9px}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#2eb7aa);color:#06110f}
+.btn.secondary{background:linear-gradient(135deg,var(--accent2),#4c7de0)}
+.btn.ok{background:var(--ok);color:#07160e}.btn.warn{background:var(--warn);color:#211500}.btn.danger{background:var(--danger);color:#230809}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:center}
+.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#223552;font-size:12px;font-weight:800}
+input,select,textarea{width:100%;background:#0c1728;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit}
+label{display:block;color:var(--muted);font-size:13px;margin:11px 0 6px}
+.back{display:inline-block;color:var(--accent);text-decoration:none;font-weight:800;margin-bottom:12px}
+.toast{position:fixed;left:14px;right:14px;bottom:14px;background:#0d192a;border:1px solid var(--accent);border-radius:12px;padding:13px;display:none;text-align:center}
+.demo-link{display:block;text-decoration:none;color:var(--text);background:#132137;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:11px}
+.demo-link strong{display:block;font-size:18px;margin-bottom:4px}.demo-link span{color:var(--muted);font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.metric{background:#132137;border:1px solid var(--line);border-radius:14px;padding:14px}
+.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:24px;font-weight:900;margin-top:4px}
+.item{background:#111d31;border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:10px}
+.item strong{display:block;margin-bottom:4px}
+.item-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.item-grid div{background:#0c1728;border-radius:10px;padding:9px}
+.item-grid span{display:block;color:var(--muted);font-size:11px}.item-grid b{display:block;margin-top:3px}
+@media(max-width:560px){.grid2,.item-grid{grid-template-columns:1fr}}
+</style></head><body><div class="app"><a class="back" href="index.html">← All CRM demos</a><header><div class="logo">SB</div><div><h1 style="margin-bottom:3px">Pricing & Margins</h1><div class="sub">SecureBid mobile CRM demonstration</div></div></header>
+<div class="card">
+  <h2>Pricing Defaults</h2>
+  <div class="grid2">
+    <div><label>Default Parts Margin %</label><input id="defaultPartMargin" type="number" min="0" max="99" value="35"></div>
+    <div><label>Default Labor Margin %</label><input id="defaultLaborMargin" type="number" min="0" max="99" value="40"></div>
+  </div>
+  <button class="btn primary" onclick="saveDefaults()">Save Defaults</button>
+</div>
+
+<div class="card">
+  <h2>Add Part</h2>
+  <label>Part Name / SKU</label><input id="partName" value="4K PoE Camera">
+  <div class="grid2">
+    <div><label>Unit Cost</label><input id="partCost" type="number" step="0.01" value="320"></div>
+    <div><label>Margin %</label><input id="partMargin" type="number" step="0.1" value="35"></div>
+  </div>
+  <label>Calculated Sell Price</label><input id="partSell" type="number" step="0.01" readonly>
+  <button class="btn secondary" onclick="addPart()">Save Part</button>
+</div>
+
+<div class="card">
+  <h2>Add Labor Rate</h2>
+  <label>Labor Type</label><input id="laborName" value="Security Technician">
+  <div class="grid2">
+    <div><label>Base Wage / Hour</label><input id="laborWage" type="number" step="0.01" value="32"></div>
+    <div><label>Burden %</label><input id="laborBurden" type="number" step="0.1" value="28"></div>
+  </div>
+  <div class="grid2">
+    <div><label>Total Labor Cost / Hour</label><input id="laborCost" type="number" step="0.01" readonly></div>
+    <div><label>Margin %</label><input id="laborMargin" type="number" step="0.1" value="40"></div>
+  </div>
+  <label>Calculated Bill Rate / Hour</label><input id="laborSell" type="number" step="0.01" readonly>
+  <button class="btn secondary" onclick="addLabor()">Save Labor Rate</button>
+</div>
+
+<div class="card">
+  <h2>Parts Catalog</h2>
+  <div id="partsList"></div>
+</div>
+
+<div class="card">
+  <h2>Labor Catalog</h2>
+  <div id="laborList"></div>
+</div>
+
+<div class="card">
+  <h2>Quote Pricing Demo</h2>
+  <label>Select Part</label><select id="quotePart"></select>
+  <label>Part Quantity</label><input id="quoteQty" type="number" value="4" min="1">
+  <label>Select Labor</label><select id="quoteLabor"></select>
+  <label>Labor Hours</label><input id="quoteHours" type="number" value="16" min="0" step="0.5">
+  <button class="btn warn" onclick="calculateQuote()">Calculate Quote Margin</button>
+  <div id="quoteSummary" style="margin-top:12px"></div>
+</div>
+</div><div id="toast" class="toast"></div><script>
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2400)}
+function money(n){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(n||0))}
+function getPricing(){return JSON.parse(localStorage.getItem('securebid_pricing')||'{"parts":[],"labor":[],"settings":{"defaultPartMargin":35,"defaultLaborMargin":40}}')}
+function setPricing(data){localStorage.setItem('securebid_pricing',JSON.stringify(data))}
+function marginFromCostSell(cost,sell){return sell>0?((sell-cost)/sell)*100:0}
+function sellFromMargin(cost,margin){return margin>=100?0:cost/(1-margin/100)}
+
+let state=getPricing();
+function calcPart(){
+  const sell=sellFromMargin(Number(partCost.value||0),Number(partMargin.value||0));
+  partSell.value=sell.toFixed(2);
+}
+function calcLabor(){
+  const wage=Number(laborWage.value||0), burden=Number(laborBurden.value||0);
+  const cost=wage*(1+burden/100);
+  laborCost.value=cost.toFixed(2);
+  laborSell.value=sellFromMargin(cost,Number(laborMargin.value||0)).toFixed(2);
+}
+['input','change'].forEach(evt=>{
+  partCost.addEventListener(evt,calcPart);partMargin.addEventListener(evt,calcPart);
+  laborWage.addEventListener(evt,calcLabor);laborBurden.addEventListener(evt,calcLabor);laborMargin.addEventListener(evt,calcLabor);
+});
+function saveDefaults(){
+  state.settings.defaultPartMargin=Number(defaultPartMargin.value||0);
+  state.settings.defaultLaborMargin=Number(defaultLaborMargin.value||0);
+  setPricing(state);toast('Pricing defaults saved.');
+}
+function addPart(){
+  const name=partName.value.trim();if(!name)return toast('Enter a part name.');
+  state.parts.push({id:Date.now(),name,cost:Number(partCost.value||0),margin:Number(partMargin.value||0),sell:Number(partSell.value||0)});
+  setPricing(state);render();toast('Part saved to catalog.');
+}
+function addLabor(){
+  const name=laborName.value.trim();if(!name)return toast('Enter a labor type.');
+  state.labor.push({id:Date.now(),name,wage:Number(laborWage.value||0),burden:Number(laborBurden.value||0),cost:Number(laborCost.value||0),margin:Number(laborMargin.value||0),sell:Number(laborSell.value||0)});
+  setPricing(state);render();toast('Labor rate saved.');
+}
+function removePart(id){state.parts=state.parts.filter(x=>x.id!==id);setPricing(state);render()}
+function removeLabor(id){state.labor=state.labor.filter(x=>x.id!==id);setPricing(state);render()}
+function render(){
+  defaultPartMargin.value=state.settings.defaultPartMargin;
+  defaultLaborMargin.value=state.settings.defaultLaborMargin;
+  partsList.innerHTML=state.parts.length?state.parts.map(p=>'<div class="item"><strong>'+p.name+'</strong><div class="item-grid"><div><span>Cost</span><b>'+money(p.cost)+'</b></div><div><span>Sell</span><b>'+money(p.sell)+'</b></div><div><span>Margin</span><b>'+p.margin.toFixed(1)+'%</b></div><div><span>Profit / Unit</span><b>'+money(p.sell-p.cost)+'</b></div></div><button class="btn danger" onclick="removePart('+p.id+')">Remove</button></div>').join(''):'<div class="sub">No parts saved yet.</div>';
+  laborList.innerHTML=state.labor.length?state.labor.map(l=>'<div class="item"><strong>'+l.name+'</strong><div class="item-grid"><div><span>Base Wage</span><b>'+money(l.wage)+'</b></div><div><span>Burden</span><b>'+l.burden.toFixed(1)+'%</b></div><div><span>Total Cost / Hr</span><b>'+money(l.cost)+'</b></div><div><span>Bill Rate / Hr</span><b>'+money(l.sell)+'</b></div><div><span>Margin</span><b>'+l.margin.toFixed(1)+'%</b></div></div><button class="btn danger" onclick="removeLabor('+l.id+')">Remove</button></div>').join(''):'<div class="sub">No labor rates saved yet.</div>';
+  quotePart.innerHTML=state.parts.map((p,i)=>'<option value="'+i+'">'+p.name+'</option>').join('');
+  quoteLabor.innerHTML=state.labor.map((l,i)=>'<option value="'+i+'">'+l.name+'</option>').join('');
+}
+function calculateQuote(){
+  if(!state.parts.length||!state.labor.length)return toast('Add at least one part and one labor rate.');
+  const p=state.parts[Number(quotePart.value||0)], l=state.labor[Number(quoteLabor.value||0)];
+  const qty=Number(quoteQty.value||0), hrs=Number(quoteHours.value||0);
+  const partCost=p.cost*qty, partSell=p.sell*qty;
+  const laborCost=l.cost*hrs, laborSell=l.sell*hrs;
+  const totalCost=partCost+laborCost, totalSell=partSell+laborSell;
+  const profit=totalSell-totalCost, margin=marginFromCostSell(totalCost,totalSell);
+  quoteSummary.innerHTML='<div class="grid2"><div class="metric"><div class="label">Total Cost</div><div class="value">'+money(totalCost)+'</div></div><div class="metric"><div class="label">Sell Price</div><div class="value">'+money(totalSell)+'</div></div><div class="metric"><div class="label">Gross Profit</div><div class="value">'+money(profit)+'</div></div><div class="metric"><div class="label">Blended Margin</div><div class="value">'+margin.toFixed(1)+'%</div></div></div>';
+  toast('Quote pricing calculated.');
+}
+if(!state.parts.length)state.parts.push({id:1,name:'4K PoE Camera',cost:320,margin:35,sell:sellFromMargin(320,35)});
+if(!state.labor.length){const cost=32*1.28;state.labor.push({id:2,name:'Security Technician',wage:32,burden:28,cost,margin:40,sell:sellFromMargin(cost,40)})}
+setPricing(state);calcPart();calcLabor();render();
+</script></body></html>

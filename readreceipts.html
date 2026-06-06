@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>Quote Read Receipts</title><style>
+:root{--bg:#08111f;--panel:#101b2e;--panel2:#16243a;--line:#263a5a;--text:#eef5ff;--muted:#9eb0c9;--accent:#4fd1c5;--accent2:#6aa8ff;--ok:#58d68d;--warn:#ffc857;--danger:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#07101c,#0b1525);color:var(--text)}
+.app{max-width:760px;margin:auto;min-height:100vh;padding:14px}
+header{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#06101c;font-weight:900;flex:0 0 auto}
+h1,h2,h3,p{margin-top:0}.sub{color:var(--muted);font-size:13px;line-height:1.45}
+.card{background:rgba(16,27,46,.97);border:1px solid var(--line);border-radius:17px;padding:15px;margin-bottom:13px;box-shadow:0 15px 42px rgba(0,0,0,.24)}
+.btn{width:100%;border:0;border-radius:12px;padding:13px 14px;background:#243856;color:var(--text);font-weight:800;margin-top:9px}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#2eb7aa);color:#06110f}
+.btn.secondary{background:linear-gradient(135deg,var(--accent2),#4c7de0)}
+.btn.ok{background:var(--ok);color:#07160e}.btn.warn{background:var(--warn);color:#211500}.btn.danger{background:var(--danger);color:#230809}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:center}
+.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#223552;font-size:12px;font-weight:800}
+input,select,textarea{width:100%;background:#0c1728;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit}
+label{display:block;color:var(--muted);font-size:13px;margin:11px 0 6px}
+.back{display:inline-block;color:var(--accent);text-decoration:none;font-weight:800;margin-bottom:12px}
+.toast{position:fixed;left:14px;right:14px;bottom:14px;background:#0d192a;border:1px solid var(--accent);border-radius:12px;padding:13px;display:none;text-align:center}
+.demo-link{display:block;text-decoration:none;color:var(--text);background:#132137;border:1px solid var(--line);border-radius:15px;padding:15px;margin-bottom:11px}
+.demo-link strong{display:block;font-size:18px;margin-bottom:4px}.demo-link span{color:var(--muted);font-size:13px}
+.metric{background:#132137;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.metric .label{font-size:12px;color:var(--muted)}.metric .value{font-size:24px;font-weight:900;margin-top:4px}
+.event{border-left:3px solid var(--accent2);padding:10px 12px;background:#101a2c;border-radius:0 11px 11px 0;margin-bottom:9px}
+.event small{color:var(--muted)}
+.quote{background:#fff;color:#172033;border-radius:14px;padding:18px}
+.quote table{width:100%;border-collapse:collapse}.quote th,.quote td{padding:10px 6px;border-bottom:1px solid #d8e0ea;text-align:left}.quote td:last-child,.quote th:last-child{text-align:right}
+@media print{body{background:white}.back,.btn,.toast,.no-print{display:none!important}.card{border:0;box-shadow:none}.quote{padding:0}}
+</style></head><body><div class="app"><a class="back" href="index.html">← All CRM demos</a><header><div class="logo">SB</div><div><h1 style="margin-bottom:3px">Quote Read Receipts</h1><div class="sub">SecureBid mobile CRM demonstration</div></div></header>
+<div class="card">
+  <h2>Automatic Read Receipt Settings</h2>
+  <p class="sub">When a customer opens a secure quote link, the backend records the event and updates the quote status to Viewed.</p>
+  <div class="row"><span>Read receipt tracking</span><span class="pill" style="background:#24543a">Enabled</span></div>
+  <div class="row"><span>First-open timestamp</span><span>Enabled</span></div>
+  <div class="row"><span>Last-open timestamp</span><span>Enabled</span></div>
+  <div class="row"><span>View counter</span><span>Enabled</span></div>
+  <div class="row"><span>Dashboard notification</span><span>Enabled</span></div>
+</div>
+
+<div class="card">
+  <h2>Send Quote Demo</h2>
+  <label>Customer Name</label><input id="customerName" value="Morgan Carter">
+  <label>Customer Email</label><input id="customerEmail" type="email" value="morgan.carter@example.com">
+  <label>Quote Number</label><input id="quoteNumber" value="SB-2026-2001">
+  <button class="btn primary" onclick="sendQuote()">Generate Secure Quote Link</button>
+  <div id="sendResult" style="margin-top:12px"></div>
+</div>
+
+<div class="card">
+  <h2>Customer Open Simulation</h2>
+  <p class="sub">This simulates the customer opening the hosted quote link from email or text.</p>
+  <button class="btn warn" onclick="simulateOpen()">Open Quote as Customer</button>
+</div>
+
+<div class="card">
+  <h2>Read Receipt Dashboard</h2>
+  <div id="receiptList"></div>
+</div>
+</div><div id="toast" class="toast"></div><script>
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2400)}
+function getReceipts(){return JSON.parse(localStorage.getItem('securebid_receipts')||'[]')}
+function setReceipts(data){localStorage.setItem('securebid_receipts',JSON.stringify(data))}
+function fmtDate(v){return new Date(v).toLocaleString()}
+
+let activeQuote=null;
+function sendQuote(){
+  const q=quoteNumber.value.trim(), name=customerName.value.trim(), email=customerEmail.value.trim();
+  if(!q||!name||!email)return toast('Complete the quote and customer fields.');
+  activeQuote={quote:q,name,email,token:'demo-'+Date.now(),sentAt:new Date().toISOString()};
+  localStorage.setItem('securebid_active_quote',JSON.stringify(activeQuote));
+  sendResult.innerHTML='<div class="event"><strong>Secure link created</strong><div>'+q+' for '+name+'</div><small>Link token: '+activeQuote.token+'</small></div>';
+  toast('Secure quote link generated.');
+}
+function simulateOpen(){
+  activeQuote=JSON.parse(localStorage.getItem('securebid_active_quote')||'null');
+  if(!activeQuote)return toast('Generate a quote link first.');
+  const now=new Date().toISOString();
+  const receipts=getReceipts();
+  let r=receipts.find(x=>x.quote===activeQuote.quote);
+  if(!r){
+    r={quote:activeQuote.quote,name:activeQuote.name,email:activeQuote.email,firstOpenedAt:now,lastOpenedAt:now,views:1,status:'Viewed'};
+    receipts.unshift(r);
+  }else{
+    r.lastOpenedAt=now;r.views+=1;r.status='Viewed';
+  }
+  setReceipts(receipts);
+  renderReceipts();
+  toast('Read receipt recorded and dashboard updated.');
+}
+function renderReceipts(){
+  const receipts=getReceipts();
+  receiptList.innerHTML=receipts.length?receipts.map(r=>'<div class="event"><strong>'+r.quote+' — '+r.status+'</strong><div>'+r.name+' · '+r.email+'</div><div style="margin-top:6px">First opened: '+fmtDate(r.firstOpenedAt)+'</div><div>Last opened: '+fmtDate(r.lastOpenedAt)+'</div><div>View count: '+r.views+'</div><small>Automatic read receipt recorded</small></div>').join(''):'<div class="sub">No quote views recorded yet.</div>';
+}
+renderReceipts();
+</script></body></html>
